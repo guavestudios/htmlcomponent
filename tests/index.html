@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+
+
+</head>
+<body>
+
+	<div data-hc="simplefunction">
+
+	</div>
+
+	<div data-hc="loadcontent">
+
+	</div>
+
+	<script>
+		//preconfig
+		var htmlcomponent = {
+			config: {
+
+			}
+		};
+
+		var components = {};
+
+		components["simplefunction"] = function(dom, opts) {
+			dom.innerHTML = "simplefunction initialized";
+		};
+		components["loadcontent"] = function(dom, opts) {
+			setTimeout(function() {
+				dom.innerHTML = "loaded <div data-hc='simplefunction'></div>";
+			}, 200);
+		};
+
+		htmlcomponent.config.autoinit = true;
+		htmlcomponent.config.observe = true;
+		htmlcomponent.config.promiseLoader=function(id){
+			return {
+				then: function(cb) {
+					setTimeout(function(){
+						cb(components[id]);
+					},0);
+				}
+			}
+		};
+	</script>
+	<script src="../dist/htmlcomponent.min.js" charset="utf-8"></script>
+</body>
+</html>

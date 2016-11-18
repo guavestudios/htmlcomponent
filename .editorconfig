@@ -1,0 +1,18 @@
+# top-most EditorConfig file
+root = true
+
+[src/**.js]
+indent_style = tab
+
+[tests/**.js]
+indent_style = tab
+
+[tests/**.html]
+indent_style = tab
+
+[rollup.config.js]
+indent_style = tab
+
+[{package.json,.travis.yml}]
+indent_style = space
+indent_size = 2
