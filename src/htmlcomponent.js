@@ -91,13 +91,15 @@ function initComponent(id,el,data){
 
 //shortcut to set static loader map
 function setStaticLoader(map) {
-	config.promiseLoader = {
-		then: function(cb) {
-			setTimeout(function(){
-				cb(map[id]);
-			},0);
-		}
-	};
+	config.promiseLoader = function(id) {
+		return {
+			then: function(cb) {
+				setTimeout(function(){
+					cb(map[id]);
+				},0);
+			}
+		};
+	}
 }
 
 htmlcomponent.query=query;
@@ -141,29 +143,29 @@ htmlcomponent.unlisten=unlisten;
 
 global.htmlcomponent=htmlcomponent;
 
+//use mutationobserver to initialize later components
+if (window.MutationObserver && config.observe) {
+	var observer = new MutationObserver(function(mutations) {
+		mutations.forEach(function(mutation) {
+			//check for all dom modifications
+			if (mutation.type == "childList" && mutation.addedNodes.length > 0) {
+				for (var i = 0, ilen = mutation.addedNodes.length; i < ilen; i++) {
+					var node = mutation.addedNodes[i];
+
+					if (node.nodeType == 1 && node.hasAttribute(config.attr)) {
+						htmlcomponent.query(node);
+					}
+				}
+			}
+		});
+	});
+
+	observer.observe(document, {subtree:true, attributeFilter: [config.attr], childList: true});
+}
+
 // AUTOINITIALIZER
 if (config.autoinit) {
 	htmlcomponent.query(document);
-
-	//use mutationobserver to initialize later components
-	if (window.MutationObserver && config.observe) {
-		var observer = new MutationObserver(function(mutations) {
-			mutations.forEach(function(mutation) {
-				//check for all dom modifications
-				if (mutation.type == "childList" && mutation.addedNodes.length > 0) {
-					for (var i = 0, ilen = mutation.addedNodes.length; i < ilen; i++) {
-						var node = mutation.addedNodes[i];
-
-						if (node.nodeType == 1 && node.hasAttribute(config.attr)) {
-							htmlcomponent.query(node);
-						}
-					}
-				}
-			});
-		});
-
-		observer.observe(document, {subtree:true, attributeFilter: [config.attr], childList: true});
-	}
 }
 
 // expose api

@@ -20,12 +20,12 @@
 		//preconfig
 		var htmlcomponent = {
 			config: {
-
+				autoinit: false,
+				observe: true
 			}
 		};
 
 		var components = {};
-
 		components["simplefunction"] = function(dom, opts) {
 			dom.innerHTML = "simplefunction initialized";
 		};
@@ -35,18 +35,14 @@
 			}, 200);
 		};
 
-		htmlcomponent.config.autoinit = true;
-		htmlcomponent.config.observe = true;
-		htmlcomponent.config.promiseLoader=function(id){
-			return {
-				then: function(cb) {
-					setTimeout(function(){
-						cb(components[id]);
-					},0);
-				}
-			}
-		};
 	</script>
 	<script src="../dist/htmlcomponent.min.js" charset="utf-8"></script>
+	<script>
+		//post config
+		htmlcomponent.setStaticLoader(components);
+
+		//self execute
+		htmlcomponent.query(document);
+	</script>
 </body>
 </html>
