@@ -1,4 +1,24 @@
+/*
+	HTMLCOMPONENT
+	TODO: this file will be restructured since we use now rollup
 
+	EXPOSED API:
+	//query
+	htmlcomponent.query
+
+	//component events
+	htmlcomponent.listen
+	htmlcomponent.unlisten
+	htmlcomponent.send
+
+	//component data
+	htmlcomponent.set
+	htmlcomponent.get
+
+	//loader
+	htmlcomponent.setStaticLoader
+
+ */
 var global=window;
 var map={};
 
@@ -22,6 +42,7 @@ if (global.htmlcomponent){
 	}
 }
 
+//current arch function
 function htmlcomponent(id,rest){
 	config.promiseLoader(id).then(function(c){
 		if (typeof c=="function") c.apply(this,args);
@@ -29,6 +50,7 @@ function htmlcomponent(id,rest){
 }
 htmlcomponent.config=config;
 
+//query tree for components
 function query(scope){
 	if (!scope) scope=document;
 
@@ -41,6 +63,8 @@ function query(scope){
 		createComponent(scope);
 	}
 }
+
+//read basic component
 function createComponent(c) {
 	var n=c.getAttribute(config.attr);
 	var d=c.getAttribute(config.attrData);
@@ -57,13 +81,27 @@ function createComponent(c) {
 	c.setAttribute(config.attr+"i",n);
 	c.removeAttribute(config.attr);
 }
+
+//init basic component
 function initComponent(id,el,data){
 	config.promiseLoader(id).then(function(n){
 		n&&n(el,data);
 	});
 }
 
+//shortcut to set static loader map
+function setStaticLoader(map) {
+	config.promiseLoader = {
+		then: function(cb) {
+			setTimeout(function(){
+				cb(map[id]);
+			},0);
+		}
+	};
+}
+
 htmlcomponent.query=query;
+htmlcomponent.setStaticLoader=setStaticLoader;
 
 
 //data
@@ -103,6 +141,7 @@ htmlcomponent.unlisten=unlisten;
 
 global.htmlcomponent=htmlcomponent;
 
+// AUTOINITIALIZER
 if (config.autoinit) {
 	htmlcomponent.query(document);
 
@@ -127,4 +166,5 @@ if (config.autoinit) {
 	}
 }
 
+// expose api
 export default htmlcomponent;
