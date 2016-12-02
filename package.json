@@ -3,15 +3,17 @@
   "version": "0.1.0",
   "description": "A microlib that empower you to reference a component in HTML",
   "main": "dist/htmlcomponent.min.js",
-	"files": [
-		"dist/htmlcomponent.min.js"
-	],
+  "files": [
+    "dist/htmlcomponent.min.js",
+    "README.md"
+  ],
   "directories": {
     "test": "tests"
   },
   "scripts": {
     "build": "./node_modules/.bin/rollup -c",
-    "watch": "./node_modules/.bin/rollup -c --watch"
+    "watch": "./node_modules/.bin/rollup -c --watch",
+    "test": "./node_modules/.bin/mocha"
   },
   "keywords": [
     "microlib",
@@ -20,6 +22,10 @@
   "author": "nomiadcode@gmail.com",
   "license": "MIT",
   "devDependencies": {
+    "chai": "^3.5.0",
+    "jsdom": "^9.8.3",
+    "mocha": "^3.2.0",
+    "mocha-jsdom": "^1.1.0",
     "rollup": "^0.36.3",
     "rollup-plugin-uglify": "^1.0.1",
     "rollup-watch": "^2.5.0"

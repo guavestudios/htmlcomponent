@@ -53,8 +53,7 @@ htmlcomponent.config=config;
 //query tree for components
 function query(scope){
 	if (!scope) scope=document;
-
-	var list=document.querySelectorAll("["+config.attr+"]");
+	var list=scope.querySelectorAll("["+config.attr+"]");
 	for (var i=0,ilen=list.length; i<ilen; i++){
 		var c=list[i];
 		createComponent(c);
