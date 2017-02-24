@@ -1,6 +1,6 @@
 {
   "name": "htmlcomponent",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A microlib that empower you to reference a component in HTML",
   "main": "dist/htmlcomponent.min.js",
   "files": [
