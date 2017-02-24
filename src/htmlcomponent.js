@@ -42,10 +42,14 @@ if (global.htmlcomponent){
 	}
 }
 
-//current arch function
+//current arch function (obsolte because we use options as object)
+// @obsolte
 function htmlcomponent(id,rest){
+	var args = [].slice.call(arguments, 1);
+
 	config.promiseLoader(id).then(function(c){
 		if (typeof c=="function") c.apply(this,args);
+		else if (typeof c=="object" && typeof c["default"] == "function") c["default"].apply(this,args);
 	});
 }
 htmlcomponent.config=config;
@@ -75,18 +79,23 @@ function createComponent(c) {
 		data=JSON.parse(sd);
 	}
 
-	initComponent(n, c, data);
+	loadComponent(n, c, data);
 
 	c.setAttribute(config.attr+"i",n);
 	c.removeAttribute(config.attr);
 }
 
-//init basic component
-function initComponent(id,el,data){
-	config.promiseLoader(id).then(function(n){
-		n&&n(el,data);
+//load basic component
+function loadComponent(id,el,data){
+	var args = [el, data];
+	config.promiseLoader(id).then(function(c){
+		if (typeof c=="function") c.apply(this,args);
+		else if (typeof c=="object" && typeof c["default"] == "function") c["default"].apply(this,args);
 	});
 }
+
+//init basic component
+
 
 //shortcut to set static loader map
 function setStaticLoader(map) {

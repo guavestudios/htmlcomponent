@@ -26,6 +26,20 @@ describe('htmlcomponent', function() {
 		htmlcomponent.query(dom);
 	});
 
+	it("it should work with an ES6 loader", function(done) {
+		var dom  = document.createElement("div");
+		dom.innerHTML="<div data-hc='myapp' />";
+		htmlcomponent.setStaticLoader({
+			'myapp': {
+				"default": function(dom, opts) {
+					expect(dom).to.be.not.null;
+					done();
+				}
+			}
+		});
+		htmlcomponent.query(dom);
+	});
+
 	it("should support options", function(done) {
 		var dom  = document.createElement("div");
 		dom.innerHTML="<div data-hc='myapp' data-hcd='{\"setting\":true}' />";
@@ -50,6 +64,16 @@ describe('htmlcomponent', function() {
 			}
 		});
 		htmlcomponent.query(dom);
+	});
+
+	it("should be backwards compatible with old structure", function(done) {
+		htmlcomponent.setStaticLoader({
+			'myapp': function(param) {
+				expect(param).to.eq("oldway");
+				done();
+			}
+		});
+		htmlcomponent("myapp", "oldway");
 	});
 
 });
