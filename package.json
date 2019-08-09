@@ -11,9 +11,9 @@
     "test": "tests"
   },
   "scripts": {
-    "build": "./node_modules/.bin/rollup -c",
-    "watch": "./node_modules/.bin/rollup -c --watch",
-    "test": "./node_modules/.bin/mocha"
+    "build": "rollup -c",
+    "watch": "rollup -c --watch",
+    "test": "mocha"
   },
   "keywords": [
     "microlib",
