@@ -1,7 +1,7 @@
 {
   "name": "htmlcomponent",
   "version": "0.1.1",
-  "description": "A microlib that empower you to reference a component in HTML",
+  "description": "A microlib that empowers you to reference a component in HTML",
   "main": "dist/htmlcomponent.min.js",
   "files": [
     "dist/htmlcomponent.min.js",
@@ -11,9 +11,9 @@
     "test": "tests"
   },
   "scripts": {
-    "build": "./node_modules/.bin/rollup -c",
-    "watch": "./node_modules/.bin/rollup -c --watch",
-    "test": "./node_modules/.bin/mocha"
+    "build": "rollup -c",
+    "watch": "rollup -c --watch",
+    "test": "mocha"
   },
   "keywords": [
     "microlib",

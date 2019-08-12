@@ -1,13 +1,15 @@
 # htmlcomponent
+
 A microlib that empowers you to reference a component in HTML.<br>
 It does this by a common way to mark the components and with an interface to pass the dom and some options directly from HTML to JS.<br>
 The basic function syntax works by default with multiple instances of one component.<br>
 HTMLComponent Spec without the need to drop browser support.
 <br>
-So no more *.js--slider-top* referencing in your HTML.
+So no more `.js--slider-top` referencing in your HTML.
 
 # Basic Usage
-```
+
+```html
 <div data-hc="app/main">just html</div>
 
 <script src="htmlcomponent.min.js"></script>
@@ -20,12 +22,16 @@ So no more *.js--slider-top* referencing in your HTML.
 	htmlcomponent.query(document);
 </script>
 ```
+
 Result will be:
-```
+
+```html
 <div data-hci="app/main">simple component</div>
 ```
+
 ## Usage with Options
-```
+
+```html
 <div data-hc="app/mainopts" data-hcd='{"name": "SuperComponent"}'>just html</div>
 
 <script src="htmlcomponent.min.js"></script>
@@ -38,13 +44,16 @@ Result will be:
 	htmlcomponent.query(document);
 </script>
 ```
+
 Result will be:
-```
+
+```html
 <div data-hci="app/mainopts">my name is SuperComponent</div>
 ```
 
 ## Usage with options as a json script
-```
+
+```html
 <div data-hc="app/mainopts">
 	<script type="application/json" data-hc>
 		{
@@ -71,7 +80,8 @@ Result will be:
 ```
 
 ## Usage with SystemJS or any other promise based loader
-```
+
+```html
 <div data-hc="app/main">
 	just html
 </div>
@@ -84,7 +94,9 @@ Result will be:
 	htmlcomponent.config.promiseLoader = System.import.bind(System)
 	htmlcomponent.query(document);
 </script>
+```
 
+```javascript
 //main.js amdstlye
 define(function() {
 	return function(dom, opts) {
@@ -94,6 +106,7 @@ define(function() {
 ```
 
 ## Use in a build/integration environment
+
 It provides a component searcher, that crawls through your template files
 and writes them to a grunt config variable to be used later on.
 There is a grunt-task that can generate you a static map of your components.<br>
@@ -102,12 +115,16 @@ in a single static file where the components are protected from uglify and rollu
 (yeah, the have the tendency to kick seemingly unused code over board)
 
 # Compatiblity
+
 htmlcomponent does nothing else so you can use any library you want.
 
 # FAQ
+
 ## But why not jQuery selecting in the DOM jungle?
+
 Because WebComponents are the way to go. https://www.webcomponents.org/
 
 ## But this library does only bind a specific DOM Element to a javascript function and pass options...
+
 The answer is: 2kb<br>
 Yeah, if you want more features from WebComponents https://www.webcomponents.org/
