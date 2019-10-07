@@ -1,187 +1,183 @@
 /*
-	HTMLCOMPONENT
-	TODO: this file will be restructured since we use now rollup
+HTMLCOMPONENT
+TODO: this file will be restructured since we use now rollup
+EXPOSED API:
+# query
+htmlcomponent.query
 
-	EXPOSED API:
-	//query
-	htmlcomponent.query
+# component events
+htmlcomponent.listen
+htmlcomponent.unlisten
+htmlcomponent.send
 
-	//component events
-	htmlcomponent.listen
-	htmlcomponent.unlisten
-	htmlcomponent.send
+# component data
+htmlcomponent.set
+htmlcomponent.get
 
-	//component data
-	htmlcomponent.set
-	htmlcomponent.get
+# loader
+htmlcomponent.setStaticLoader
 
-	//loader
-	htmlcomponent.setStaticLoader
+*/
+var global = window
+var map = {}
 
- */
-var global = window;
-var map = {};
-
-var listeners = [];
-var data = {};
+var listeners = []
+var data = {}
 
 var config = {
-	autoinit: false,
-	observe: false,
-	attr: "data-hc",
-	attrData: "data-hcd",
-	attrInit: "data-hci",
-	promiseLoader: (window.System && window.System.import.bind(window.System)) ||
-		function(id) {
-			throw new Error("htmlcomponent: no alternative loader");
-		}
-};
+  autoinit: false,
+  observe: false,
+  attr: 'data-hc',
+  attrData: 'data-hcd',
+  attrInit: 'data-hci',
+  promiseLoader: (window.System && window.System.import.bind(window.System)) ||
+    function (id) {
+      throw new Error('htmlcomponent: no alternative loader')
+    }
+}
 if (global.htmlcomponent) {
-	for (var i in config) {
-		config[i] = global.htmlcomponent.config[i] || config[i];
-	}
+  for (var i in config) {
+    config[i] = global.htmlcomponent.config[i] || config[i]
+  }
 }
 
-//current arch function (obsolte because we use options as object)
+// current arch function (obsolte because we use options as object)
 // @obsolte
-function htmlcomponent(id, rest) {
-	var args = [].slice.call(arguments, 1);
+function htmlcomponent (id, rest) {
+  var args = [].slice.call(arguments, 1)
 
-	config.promiseLoader(id).then(function(c) {
-		if (typeof c == "function") c.apply(this, args);
-		else if (typeof c == "object" && typeof c["default"] == "function") c["default"].apply(this, args);
-	});
+  config.promiseLoader(id).then(function (c) {
+    if (typeof c ==== 'function') c.apply(this, args)
+    else if (typeof c ==== 'object' && typeof c.default ==== 'function') c.default.apply(this, args)
+  })
 }
-htmlcomponent.config = config;
+htmlcomponent.config = config
 
-//query tree for components
-function query(scope) {
-	if (!scope) scope = document;
-	var list = scope.querySelectorAll("[" + config.attr + "]");
-	for (var i = 0, ilen = list.length; i < ilen; i++) {
-		var c = list[i];
-		createComponent(c);
-	}
-	if (scope.nodeType == 1 && scope.hasAttribute(config.attr)) {
-		createComponent(scope);
-	}
-}
-
-//read basic component
-function createComponent(c) {
-	var n = c.getAttribute(config.attr);
-	var d = c.getAttribute(config.attrData);
-	var sd = c.firstElementChild && c.firstElementChild.nodeName == "SCRIPT" && c.firstElementChild.getAttribute(config.attrData) != null && c.firstElementChild.innerHTML;
-	var data = null;
-	if (d) {
-		data = JSON.parse(d);
-	} else if (sd) {
-		data = JSON.parse(sd);
-	}
-
-	loadComponent(n, c, data);
-
-	c.setAttribute(config.attr + "i", n);
-	c.removeAttribute(config.attr);
+// query tree for components
+function query (scope) {
+  if (!scope) scope = document
+  var list = scope.querySelectorAll('[' + config.attr + ']')
+  for (var i = 0, ilen = list.length; i < ilen; i++) {
+    var c = list[i]
+    createComponent(c)
+  }
+  if (scope.nodeType === 1 && scope.hasAttribute(config.attr)) {
+    createComponent(scope)
+  }
 }
 
-//load basic component
-function loadComponent(id, el, data) {
-	var args = [el, data];
-	config.promiseLoader(id).then(function(c) {
-		if (typeof c == "function") c.apply(this, args);
-		else if (typeof c == "object" && typeof c["default"] == "function") c["default"].apply(this, args);
-	});
+// read basic component
+function createComponent (c) {
+  var n = c.getAttribute(config.attr)
+  var d = c.getAttribute(config.attrData)
+  var sd = c.firstElementChild && c.firstElementChild.nodeName === 'SCRIPT' && c.firstElementChild.getAttribute(config.attrData) != null && c.firstElementChild.innerHTML
+  var data = null
+  if (d) {
+    data = JSON.parse(d)
+  } else if (sd) {
+    data = JSON.parse(sd)
+  }
+
+  loadComponent(n, c, data)
+
+  c.setAttribute(config.attr + 'i', n)
+  c.removeAttribute(config.attr)
 }
 
-//init basic component
-
-
-//shortcut to set static loader map
-function setStaticLoader(map) {
-	config.promiseLoader = function(id) {
-		return {
-			then: function(cb) {
-				setTimeout(function() {
-					cb(map[id]);
-				}, 0);
-			}
-		};
-	}
+// load basic component
+function loadComponent (id, el, data) {
+  var args = [el, data]
+  config.promiseLoader(id).then(function (c) {
+    if (typeof c ==== 'function') c.apply(this, args)
+    else if (typeof c ==== 'object' && typeof c.default ==== 'function') c.default.apply(this, args)
+  })
 }
 
-htmlcomponent.query = query;
-htmlcomponent.setStaticLoader = setStaticLoader;
+// init basic component
 
-
-//data
-function dataSet(id, value) {
-	data[id] = value;
+// shortcut to set static loader map
+function setStaticLoader (map) {
+  config.promiseLoader = function (id) {
+    return {
+      then: function (cb) {
+        setTimeout(function () {
+          cb(map[id])
+        }, 0)
+      }
+    }
+  }
 }
 
-function dataGet(id) {
-	return data[id];
-}
-htmlcomponent.set = dataSet;
-htmlcomponent.get = dataGet;
+htmlcomponent.query = query
+htmlcomponent.setStaticLoader = setStaticLoader
 
-//events
-function send(event, data) {
-	var list = listeners[event];
-	if (list) {
-		list.forEach(function(v) {
-			v(event, data);
-		});
-	}
+// data
+function dataSet (id, value) {
+  data[id] = value
 }
 
-function listen(event, fnc) {
-	var list = listeners[event];
-	if (!list) list = listeners[event] = [];
-	list.push(fnc);
+function dataGet (id) {
+  return data[id]
+}
+htmlcomponent.set = dataSet
+htmlcomponent.get = dataGet
 
+// events
+function send (event, data) {
+  var list = listeners[event]
+  if (list) {
+    list.forEach(function (v) {
+      v(event, data)
+    })
+  }
 }
 
-function unlisten(event, fnc) {
-	var list = listeners[event];
-	if (list) {
-		list.splice(list.indexOf(fnc), 1);
-	}
+function listen (event, fnc) {
+  var list = listeners[event]
+  if (!list) list = listeners[event] = []
+  list.push(fnc)
 }
-htmlcomponent.send = send;
-htmlcomponent.listen = listen;
-htmlcomponent.unlisten = unlisten;
 
-global.htmlcomponent = htmlcomponent;
+function unlisten (event, fnc) {
+  var list = listeners[event]
+  if (list) {
+    list.splice(list.indexOf(fnc), 1)
+  }
+}
+htmlcomponent.send = send
+htmlcomponent.listen = listen
+htmlcomponent.unlisten = unlisten
 
-//use mutationobserver to initialize later components
+global.htmlcomponent = htmlcomponent
+
+// use mutationobserver to initialize later components
 if (window.MutationObserver && config.observe) {
-	var observer = new MutationObserver(function(mutations) {
-		mutations.forEach(function(mutation) {
-			//check for all dom modifications
-			if (mutation.type == "childList" && mutation.addedNodes.length > 0) {
-				for (var i = 0, ilen = mutation.addedNodes.length; i < ilen; i++) {
-					var node = mutation.addedNodes[i];
+  var observer = new MutationObserver(function (mutations) {
+    mutations.forEach(function (mutation) {
+      // check for all dom modifications
+      if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+        for (var i = 0, ilen = mutation.addedNodes.length; i < ilen; i++) {
+          var node = mutation.addedNodes[i]
 
-					if (node.nodeType == 1 && node.hasAttribute(config.attr)) {
-						htmlcomponent.query(node);
-					}
-				}
-			}
-		});
-	});
+          if (node.nodeType === 1 && node.hasAttribute(config.attr)) {
+            htmlcomponent.query(node)
+          }
+        }
+      }
+    })
+  })
 
-	observer.observe(document, {
-		subtree: true,
-		attributeFilter: [config.attr],
-		childList: true
-	});
+  observer.observe(document, {
+    subtree: true,
+    attributeFilter: [config.attr],
+    childList: true
+  })
 }
 
 // AUTOINITIALIZER
 if (config.autoinit) {
-	htmlcomponent.query(document);
+  htmlcomponent.query(document)
 }
 
 // expose api
-export default htmlcomponent;
+export default htmlcomponent

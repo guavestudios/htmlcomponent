@@ -1,79 +1,78 @@
-var jsdom = require('mocha-jsdom');
-var expect = require('chai').expect;
+/* global describe, it, dom */
 
-describe('htmlcomponent', function() {
-	var htmlcomponent;
-	var dom;
-	jsdom();
+var jsdom = require('mocha-jsdom')
+var expect = require('chai').expect
 
-	//global.window = {};
+describe('htmlcomponent', function () {
+  var htmlcomponent
+  var dom
+  jsdom()
 
-	before(function() {
-		htmlcomponent = require('../dist/htmlcomponent.min.js');
+  // global.window = {};
 
+  before(function () {
+    htmlcomponent = require('../dist/htmlcomponent.min.js')
+  })
 
-	});
+  it('should basically work', function (done) {
+    var dom = document.createElement('div')
+    dom.innerHTML = "<div data-hc='myapp' />"
+    htmlcomponent.setStaticLoader({
+      myapp: function (dom, opts) {
+        expect(dom).to.be.not.null()
+        done()
+      }
+    })
+    htmlcomponent.query(dom)
+  })
 
-	it("should basically work", function(done) {
-		var dom  = document.createElement("div");
-		dom.innerHTML="<div data-hc='myapp' />";
-		htmlcomponent.setStaticLoader({
-			'myapp': function(dom, opts) {
-				expect(dom).to.be.not.null;
-				done();
-			}
-		});
-		htmlcomponent.query(dom);
-	});
+  it('it should work with an ES6 loader', function (done) {
+    var dom = document.createElement('div')
+    dom.innerHTML = "<div data-hc='myapp' />"
+    htmlcomponent.setStaticLoader({
+      myapp: {
+        default: function (dom, opts) {
+          expect(dom).to.be.not.null()
+          done()
+        }
+      }
+    })
+    htmlcomponent.query(dom)
+  })
 
-	it("it should work with an ES6 loader", function(done) {
-		var dom  = document.createElement("div");
-		dom.innerHTML="<div data-hc='myapp' />";
-		htmlcomponent.setStaticLoader({
-			'myapp': {
-				"default": function(dom, opts) {
-					expect(dom).to.be.not.null;
-					done();
-				}
-			}
-		});
-		htmlcomponent.query(dom);
-	});
+  it('should support options', function (done) {
+    var dom = document.createElement('div')
+    dom.innerHTML = "<div data-hc='myapp' data-hcd='{\"setting\":true}' />"
+    htmlcomponent.setStaticLoader({
+      myapp: function (dom, opts) {
+        expect(dom).to.be.not.null()
+        expect(opts.setting).to.be.true()
+        done()
+      }
+    })
+    htmlcomponent.query(dom)
+  })
 
-	it("should support options", function(done) {
-		var dom  = document.createElement("div");
-		dom.innerHTML="<div data-hc='myapp' data-hcd='{\"setting\":true}' />";
-		htmlcomponent.setStaticLoader({
-			'myapp': function(dom, opts) {
-				expect(dom).to.be.not.null;
-				expect(opts.setting).to.be.true;
-				done();
-			}
-		});
-		htmlcomponent.query(dom);
-	});
+  it('should support inner options', function (done) {
+    var dom = document.createElement('div')
+    dom.innerHTML = "<div data-hc='myapp'><script type='appliction/json' data-hcd>{\"setting\":true}</script></div>"
+    htmlcomponent.setStaticLoader({
+      myapp: function (dom, opts) {
+        expect(dom).to.be.not.null()
+        expect(opts.setting).to.be.true()
+        done()
+      }
+    })
+    htmlcomponent.query(dom)
+  })
 
-	it("should support inner options", function(done) {
-		var dom  = document.createElement("div");
-		dom.innerHTML="<div data-hc='myapp'><script type='appliction/json' data-hcd>{\"setting\":true}</script></div>";
-		htmlcomponent.setStaticLoader({
-			'myapp': function(dom, opts) {
-				expect(dom).to.be.not.null;
-				expect(opts.setting).to.be.true;
-				done();
-			}
-		});
-		htmlcomponent.query(dom);
-	});
-
-	it("should be backwards compatible with old structure", function(done) {
-		htmlcomponent.setStaticLoader({
-			'myapp': function(param) {
-				expect(param).to.eq("oldway");
-				done();
-			}
-		});
-		htmlcomponent("myapp", "oldway");
-	});
-
-});
+  it('should be backwards compatible with old structure', function (done) {
+    htmlcomponent.setStaticLoader({
+      myapp: function (param) {
+        expect(param).to.eq('oldway')
+        done()
+      }
+    })
+    htmlcomponent('myapp', 'oldway')
+  })
+})
