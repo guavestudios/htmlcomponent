@@ -13,7 +13,11 @@
 	</div>
 
 	<div data-hc="loadcontent">
+		
+	</div>
 
+	<div data-hc="comp">
+		<button type="button">Remove Me</button>
 	</div>
 
 	<script>
@@ -42,7 +46,21 @@
 				let rmDom = document.querySelector('[data-hci="simplefunction"]')
 				rmDom.remove()
 			}, 1000);
+			setTimeout(function() {
+				console.log('remove from dom 2')
+				let rmDom = document.querySelector('[data-hci="simplefunction"]')
+				rmDom?.remove()
+			}, 2000);
 		};
+		components['comp'] = function(dom, opts, htmlcomponent) {
+			dom.querySelector('button').addEventListener('click', () => {
+				htmlcomponent.destroy(dom)
+				dom.remove()
+			})
+			htmlcomponent.onElementDestory(dom, () => {
+				console.log("i am destroyed")
+			})
+		}
 
 	</script>
 	<script src="../dist/htmlcomponent.min.js" charset="utf-8"></script>
