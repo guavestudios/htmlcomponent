@@ -1,11 +1,13 @@
-import uglify from 'rollup-plugin-uglify';
+import { terser } from "rollup-plugin-terser";
 
 export default {
-  entry: 'src/htmlcomponent.js',
-  format: 'umd',
-	moduleName: 'htmlcomponent',
-  dest: 'dist/htmlcomponent.min.js',
+  input: 'src/htmlcomponent.js',
+	output: {
+		file: 'dist/htmlcomponent.min.js',
+		format: 'umd',
+		name: 'htmlcomponent'
+	},
 	plugins: [
-		uglify()
+		terser()
 	]
 };

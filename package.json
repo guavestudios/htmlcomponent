@@ -22,12 +22,11 @@
   "author": "nomiadcode@gmail.com",
   "license": "MIT",
   "devDependencies": {
-    "chai": "^3.5.0",
-    "jsdom": "^9.8.3",
-    "mocha": "^3.2.0",
-    "mocha-jsdom": "^1.1.0",
-    "rollup": "^0.36.3",
-    "rollup-plugin-uglify": "^1.0.1",
-    "rollup-watch": "^2.5.0"
+    "chai": "^4.3.0",
+    "jsdom": "^19.0.0",
+    "mocha": "^10.0.0",
+    "mocha-jsdom": "^2.0.0",
+    "rollup": "^2.74.0",
+    "rollup-plugin-terser": "^7.0"
   }
 }
