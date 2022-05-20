@@ -26,13 +26,22 @@
 		};
 
 		var components = {};
-		components["simplefunction"] = function(dom, opts) {
+		components["simplefunction"] = function(dom, opts, htmlcomponent) {
 			dom.innerHTML = "simplefunction initialized";
+			console.log(htmlcomponent)
+			htmlcomponent.onElementDestory(dom, () => {
+				console.log('i was removed', dom.ownerDocument)
+			})
 		};
 		components["loadcontent"] = function(dom, opts) {
 			setTimeout(function() {
 				dom.innerHTML = "loaded <div data-hc='simplefunction'></div>";
 			}, 200);
+			setTimeout(function() {
+				console.log('remove from dom')
+				let rmDom = document.querySelector('[data-hci="simplefunction"]')
+				rmDom.remove()
+			}, 1000);
 		};
 
 	</script>

@@ -87,7 +87,7 @@ function createComponent(c) {
 
 //load basic component
 function loadComponent(id, el, data) {
-	var args = [el, data];
+	var args = [el, data, htmlcomponent];
 	config.promiseLoader(id).then(function(c) {
 		if (typeof c == "function") c.apply(this, args);
 		else if (typeof c == "object" && typeof c["default"] == "function") c["default"].apply(this, args);
@@ -167,6 +167,14 @@ if (window.MutationObserver && config.observe) {
 						htmlcomponent.query(node);
 					}
 				}
+			} else if(mutation.removedNodes.length > 0) {
+				for (var i = 0, ilen = mutation.removedNodes.length; i < ilen; i++) {
+					var node = mutation.removedNodes[i];
+
+					if (node.nodeType == 1 && node.hasAttribute(config.attrInit)) {
+						htmlcomponent.destroy(node);
+					}
+				}
 			}
 		});
 	});
@@ -177,6 +185,18 @@ if (window.MutationObserver && config.observe) {
 		childList: true
 	});
 }
+
+function onElementDestory (dom, fnc) {
+	dom.__htmlComp_destroy = fnc
+}
+function destroy (node) {
+	if (node.__htmlComp_destroy) {
+		node.__htmlComp_destroy()
+		node.__htmlComp_destroy = null
+	}
+}
+htmlcomponent.destroy = destroy
+htmlcomponent.onElementDestory = onElementDestory
 
 // AUTOINITIALIZER
 if (config.autoinit) {
