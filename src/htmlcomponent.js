@@ -154,53 +154,76 @@ htmlcomponent.unlisten = unlisten;
 
 global.htmlcomponent = htmlcomponent;
 
-//use mutationobserver to initialize later components
-if (window.MutationObserver && config.observe) {
-	var observer = new MutationObserver(function(mutations) {
-		mutations.forEach(function(mutation) {
-			//check for all dom modifications
-			if (mutation.type == "childList" && mutation.addedNodes.length > 0) {
-				for (var i = 0, ilen = mutation.addedNodes.length; i < ilen; i++) {
-					var node = mutation.addedNodes[i];
+function observe () {
+	//use mutationobserver to initialize later components
+	if (window.MutationObserver && htmlcomponent.observer == null) {
+		var observer = new MutationObserver(function(mutations) {
+			mutations.forEach(function(mutation) {
+				//check for all dom modifications
+				if (mutation.type == "childList" && mutation.addedNodes.length > 0) {
+					for (var i = 0, ilen = mutation.addedNodes.length; i < ilen; i++) {
+						var node = mutation.addedNodes[i];
 
-					if (node.nodeType == 1 && node.hasAttribute(config.attr)) {
-						htmlcomponent.query(node);
+						if (node.nodeType == 1 && node.hasAttribute(config.attr)) {
+							htmlcomponent.query(node);
+						}
+					}
+				} else if(mutation.removedNodes.length > 0) {
+					for (var i = 0, ilen = mutation.removedNodes.length; i < ilen; i++) {
+						var node = mutation.removedNodes[i];
+
+						if (node.nodeType == 1 && node.hasAttribute(config.attrInit)) {
+							htmlcomponent.destroy(node);
+						}
 					}
 				}
-			} else if(mutation.removedNodes.length > 0) {
-				for (var i = 0, ilen = mutation.removedNodes.length; i < ilen; i++) {
-					var node = mutation.removedNodes[i];
-
-					if (node.nodeType == 1 && node.hasAttribute(config.attrInit)) {
-						htmlcomponent.destroy(node);
-					}
-				}
-			}
+			});
 		});
-	});
 
-	observer.observe(document, {
-		subtree: true,
-		attributeFilter: [config.attr],
-		childList: true
-	});
+		observer.observe(document, {
+			subtree: true,
+			attributeFilter: [config.attr],
+			childList: true
+		});
+
+		htmlcomponent.observer = observer
+	}
+}
+function stopObserve () {
+	if (htmlcomponent.observer) {
+		htmlcomponent.observer.disconnect()
+		htmlcomponent.observer = null
+	}
 }
 
-function onElementDestory (dom, fnc) {
+
+function onElementDestroy (dom, fnc) {
 	dom.__htmlComp_destroy = fnc
 }
-function destroy (node) {
+function destroyElement (node) {
 	if (node.__htmlComp_destroy) {
 		node.__htmlComp_destroy()
 		node.__htmlComp_destroy = null
 	}
 }
+function destroy (node) {
+	var nodes = node.querySelectorAll('[' + config.attrInit + ']')
+	Array.from(nodes).forEach(v => {
+		destroyElement(v)
+	})
+	destroyElement(node)
+}
+htmlcomponent.stopObserve = stopObserve
 htmlcomponent.destroy = destroy
-htmlcomponent.onElementDestory = onElementDestory
+htmlcomponent.onElementDestroy = onElementDestroy
+htmlcomponent.observe = observe
 
 // AUTOINITIALIZER
 if (config.autoinit) {
 	htmlcomponent.query(document);
+}
+if (config.observe) {
+	htmlcomponent.observe()
 }
 
 // expose api

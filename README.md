@@ -105,6 +105,53 @@ define(function() {
 });
 ```
 
+## Listen for destruction of a component
+In case you need to cleanup Sideeffects of a component you can register the destroy listener
+```
+// component
+return function (dom, opts, htmlcomponent) {
+
+	// register for destruction listener
+	htmlcomponent.onElementDestroy(dom, () => {
+		console.log('i was removed', dom.ownerDocument)
+	})
+}
+```
+
+To notify about the destruction when loading dynamic content you should notify the componenten before its removal from the dom
+```
+let container = document.querySelector('#content')
+
+// all components inside will be notified
+htmlcomponent.destroy(container)
+
+// then you can clear the container
+container.innerHTML = ''
+
+```
+
+It depends now if you use the Mutation Observer. In this case you
+
+## Start and stop the MutationObserver
+This can be done with this 2 calls on the htmlcomponent
+```
+htmlcomponent.observe()     // start observer
+htmlcomponent.stopObserve() // stop observer
+```
+
+## Pre Configuration before load
+Before you include the Javascript file where HTML Component is included add this to the html
+```
+<script>
+  var htmlcomponent = {
+		config: {
+			autoinit: true,  // scan the document on script inclusion for components and init them
+			observe: true    // start observer to init and destroy new htmlcomponents
+		}
+	}
+</script>
+```
+
 ## Use in a build/integration environment
 
 It provides a component searcher, that crawls through your template files

@@ -33,7 +33,7 @@
 		components["simplefunction"] = function(dom, opts, htmlcomponent) {
 			dom.innerHTML = "simplefunction initialized";
 			console.log(htmlcomponent)
-			htmlcomponent.onElementDestory(dom, () => {
+			htmlcomponent.onElementDestroy(dom, () => {
 				console.log('i was removed', dom.ownerDocument)
 			})
 		};
@@ -57,7 +57,7 @@
 				htmlcomponent.destroy(dom)
 				dom.remove()
 			})
-			htmlcomponent.onElementDestory(dom, () => {
+			htmlcomponent.onElementDestroy(dom, () => {
 				console.log("i am destroyed")
 			})
 		}
