@@ -3,10 +3,13 @@
   "version": "0.1.2",
   "description": "A microlib that empowers you to reference a component in HTML",
   "main": "dist/htmlcomponent.min.js",
+  "browser": "dist/htmlcomponent.min.js",
   "files": [
     "dist/htmlcomponent.min.js",
+    "src/htmlcomponent.js",
     "README.md"
   ],
+  "module": "src/htmlcomponent.js",
   "directories": {
     "test": "tests"
   },
