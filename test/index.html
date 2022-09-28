@@ -15,17 +15,25 @@
 	<div data-hc="loadcontent">
 		
 	</div>
-
-	<div data-hc="comp">
-		<button type="button">Remove Me</button>
+	<div>
+		<div>
+			<div>
+				<div>
+					<div data-hc="comp">
+						<button type="button">Remove Me</button>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
+	
 
 	<script>
 		//preconfig
 		var htmlcomponent = {
 			config: {
 				autoinit: false,
-				observe: true
+				observe: false
 			}
 		};
 
@@ -54,8 +62,8 @@
 		};
 		components['comp'] = function(dom, opts, htmlcomponent) {
 			dom.querySelector('button').addEventListener('click', () => {
-				htmlcomponent.destroy(dom)
-				dom.remove()
+				//htmlcomponent.destroy(dom)
+				dom.parentElement.parentElement.parentElement.parentElement.parentElement.innerHTML = ''//()
 			})
 			htmlcomponent.onElementDestroy(dom, () => {
 				console.log("i am destroyed")
@@ -70,6 +78,7 @@
 
 		//self execute
 		htmlcomponent.query(document);
+		htmlcomponent.observe()
 	</script>
 </body>
 </html>

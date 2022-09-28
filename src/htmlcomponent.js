@@ -154,7 +154,7 @@ htmlcomponent.unlisten = unlisten;
 
 global.htmlcomponent = htmlcomponent;
 
-function observe () {
+function observe (element) {
 	//use mutationobserver to initialize later components
 	if (window.MutationObserver && htmlcomponent.observer == null) {
 		var observer = new MutationObserver(function(mutations) {
@@ -172,7 +172,7 @@ function observe () {
 					for (var i = 0, ilen = mutation.removedNodes.length; i < ilen; i++) {
 						var node = mutation.removedNodes[i];
 
-						if (node.nodeType == 1 && node.hasAttribute(config.attrInit)) {
+						if (node.nodeType === Node.ELEMENT_NODE) {
 							htmlcomponent.destroy(node);
 						}
 					}
@@ -180,7 +180,7 @@ function observe () {
 			});
 		});
 
-		observer.observe(document, {
+		observer.observe(element || document, {
 			subtree: true,
 			attributeFilter: [config.attr],
 			childList: true
