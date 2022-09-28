@@ -160,20 +160,23 @@ function observe (element) {
 		var observer = new MutationObserver(function(mutations) {
 			mutations.forEach(function(mutation) {
 				//check for all dom modifications
-				if (mutation.type == "childList" && mutation.addedNodes.length > 0) {
-					for (var i = 0, ilen = mutation.addedNodes.length; i < ilen; i++) {
-						var node = mutation.addedNodes[i];
+				if (mutation.type === 'childList') {
+					if (mutation.addedNodes.length > 0) {
+						for (var i = 0, ilen = mutation.addedNodes.length; i < ilen; i++) {
+							var node = mutation.addedNodes[i];
 
-						if (node.nodeType == 1 && node.hasAttribute(config.attr)) {
-							htmlcomponent.query(node);
+							if (node.nodeType === Node.ELEMENT_NODE) {
+								htmlcomponent.query(node);
+							}
 						}
 					}
-				} else if(mutation.removedNodes.length > 0) {
-					for (var i = 0, ilen = mutation.removedNodes.length; i < ilen; i++) {
-						var node = mutation.removedNodes[i];
+					if (mutation.removedNodes.length > 0) {
+						for (var i = 0, ilen = mutation.removedNodes.length; i < ilen; i++) {
+							var node = mutation.removedNodes[i];
 
-						if (node.nodeType === Node.ELEMENT_NODE) {
-							htmlcomponent.destroy(node);
+							if (node.nodeType === Node.ELEMENT_NODE) {
+								htmlcomponent.destroy(node);
+							}
 						}
 					}
 				}
